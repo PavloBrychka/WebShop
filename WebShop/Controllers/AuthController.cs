@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using WebShop.Abstract;
 using WebShop.Constants;
 using WebShop.Data.Entites.Identity;
 //using WebShop.Data.Entities.Identity;
 using WebShop.Models;
+using WebShop.Models.Auth;
 //using WebShop.Models.Auth;
 
 namespace WebShop.Controllers
@@ -14,9 +16,12 @@ namespace WebShop.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<UserEntity> _userManager;
-        public AuthController(UserManager<UserEntity> userManager)
+        private readonly IJwtTokenService _jwtTokenService;
+
+        public AuthController(UserManager<UserEntity> userManager, IJwtTokenService jwtTokenService)
         {
             _userManager = userManager;
+            _jwtTokenService = jwtTokenService; 
         }
 
         [HttpPost("register")]
@@ -47,6 +52,25 @@ namespace WebShop.Controllers
                 return Ok();
             }
             return BadRequest();
+        }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginViewModel model)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                    return BadRequest("Не вірно вказані дані");
+                if (!await _userManager.CheckPasswordAsync(user, model.Password))
+                    return BadRequest("Не вірно вказані дані");
+                var token = await _jwtTokenService.CreateToken(user);
+                return Ok(new { token });
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
