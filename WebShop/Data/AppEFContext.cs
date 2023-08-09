@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using WebShop.Data.Entites;
+using WebShop.Data.Entities;
+
 using WebShop.Data.Entites.Identity;
+using WebShop.Data.Entites;
 
 namespace WebShop.Data
 {
     public class AppEFContext : IdentityDbContext<UserEntity, RoleEntity, int,
-         IdentityUserClaim<int>, UserRoleEntity, IdentityUserLogin<int>,
-         IdentityRoleClaim<int>, IdentityUserToken<int>>
+        IdentityUserClaim<int>, UserRoleEntity, IdentityUserLogin<int>,
+        IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public AppEFContext(DbContextOptions<AppEFContext> options)
             : base(options)
@@ -16,6 +18,9 @@ namespace WebShop.Data
 
         }
         public DbSet<CategoryEntity> Categories { get; set; }
+        public DbSet<ProductEntity> Products { get; set; }
+        public DbSet<ProductImageEntity> ProductImages { get; set; }
+        public DbSet<BasketEntity> Baskets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -33,6 +38,10 @@ namespace WebShop.Data
                     .WithMany(r => r.UserRoles)
                     .HasForeignKey(u => u.UserId)
                     .IsRequired();
+            });
+            builder.Entity<BasketEntity>(ur =>
+            {
+                ur.HasKey(ur => new { ur.UserId, ur.ProductId });
             });
         }
     }
