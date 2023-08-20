@@ -21,6 +21,8 @@ namespace WebShop.Data
         public DbSet<ProductEntity> Products { get; set; }
         public DbSet<ProductImageEntity> ProductImages { get; set; }
         public DbSet<BasketEntity> Baskets { get; set; }
+        public DbSet<OrderEntity> Orders { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

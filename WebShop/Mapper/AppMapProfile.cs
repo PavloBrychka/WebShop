@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using WebShop.Data.Entites;
 using WebShop.Data.Entities;
 using WebShop.Models;
+using WebShop.Models.Order;
 
 namespace WebShop.Mapper
 {
@@ -17,6 +19,26 @@ namespace WebShop.Mapper
                 .ForMember(x => x.Image, opt => opt.Ignore());
 
             CreateMap<ProductImageEntity, ProdcutImageItemViewModel>();
+
+
+            CreateMap<OrderEntity, OrderViewModel>();
+
+          
+           
+             CreateMap< OrderCreateViewModel, OrderEntity>();
+
+          
         }
+
+      
     }
 }
+
+//var configuration = new MapperConfiguration(cfg => {
+//    cfg.CreateMap<OrderCreateViewModel, OrderEntity>();
+//});
+
+//var mapper = configuration.CreateMapper();
+
+//CreateMap<OrderEntity, OrderViewModel>()
+//   .ForMember(x => x.UserId, opt => opt.MapFrom(x => x.UserId));
